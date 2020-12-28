@@ -38,6 +38,13 @@ resource "aws_iam_policy" "lambda_default" {
       ],
       "Resource": "arn:aws:logs:*:*:*",
       "Effect": "Allow"
+    },
+    {
+      "Action": [
+        "ssm:Get*"
+      ],
+      "Resource": "arn:aws:ssm:*:*",
+      "Effect": "Allow"
     }
   ]
 }

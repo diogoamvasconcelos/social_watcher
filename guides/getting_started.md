@@ -1,10 +1,3 @@
-# Credentials
-
-## AWS account
-* email:diogo.am.vasconcelos+sw@gmail.com
-* pass: 3.aws
-* username: diogo.vasconcelos.sw
-
 # Configuration (installation - Ubuntu)
 
 ## Terraform
@@ -19,6 +12,8 @@ apt install awscli
 https://docs.aws.amazon.com/lambda/latest/dg/golang-package.html
 ```
 go get github.com/aws/aws-lambda-go/lambda
+go get github.com/aws/aws-lambda-go/events
+go get github.com/dghubble/go-twitter/twitter
 ```
 
 ### GOLANG tuts
