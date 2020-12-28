@@ -8,5 +8,5 @@ mkdir -p $OUT_DIR
 
 # Lambda artifact
 rm -f $TMP_DIR/lambda_artifact
-go build -o $TMP_DIR/lambda_artifact $THIS_PATH/../src/hello.go
+GOOS=linux go build -o $TMP_DIR/lambda_artifact $THIS_PATH/../src/hello.go
 zip -qjr $OUT_DIR/lambda_artifact.zip $TMP_DIR/lambda_artifact
