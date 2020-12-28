@@ -1,3 +1,5 @@
+#!/bin/sh
+
 THIS_PATH="$(dirname "$(realpath "$0")")"
 
 OUT_DIR=$THIS_PATH/../.build

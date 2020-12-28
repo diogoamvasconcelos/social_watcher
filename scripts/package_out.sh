@@ -1,3 +1,5 @@
+#!/bin/sh
+
 THIS_PATH="$(dirname "$(realpath "$0")")"
 TMP_DIR=$THIS_PATH/../.tmp
 
@@ -7,6 +9,14 @@ rm -rf $OUT_DIR
 mkdir -p $OUT_DIR
 
 # Lambda artifact
-rm -f $TMP_DIR/lambda_artifact
-GOOS=linux go build -o $TMP_DIR/lambda_artifact $THIS_PATH/../src/hello.go
-zip -qjr $OUT_DIR/lambda_artifact.zip $TMP_DIR/lambda_artifact
+createLambdaArtifact() {
+  LAMBDA_ARTIFACT=$1
+  LAMBDA_FN_SRC_PATH=$2
+  
+  rm -f $TMP_DIR/$LAMBDA_ARTIFACT
+  GOOS=linux go build -o $TMP_DIR/$LAMBDA_ARTIFACT $THIS_PATH/../src/$LAMBDA_FN_SRC_PATH
+  zip -qjr $OUT_DIR/$LAMBDA_ARTIFACT.zip $TMP_DIR/$LAMBDA_ARTIFACT
+}
+
+createLambdaArtifact hello_world_lambda hello.go
+createLambdaArtifact watch_twitter_lambda handlers/watchTwitter.go

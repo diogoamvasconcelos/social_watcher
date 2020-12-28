@@ -15,3 +15,8 @@ scripts/with_env_vars.sh scripts/terraform_plan.sh
 
 scripts/with_env_vars.sh scripts/terraform_deploy.sh
 ```
+### CI
+
+```
+scripts/build_and_deploy
+```

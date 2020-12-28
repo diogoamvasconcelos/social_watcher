@@ -1,7 +1,7 @@
 locals {
-    hello_world_lambda_file = "${var.out_dir}/lambda_artifact.zip"
+    hello_world_lambda_file = "${var.out_dir}/hello_world_lambda.zip"
     hello_world_lambda_name = "hello_world_lambda"
-    hello_world_lambda_handler = "lambda_artifact"
+    hello_world_lambda_handler = "hello_world_lambda"
     hello_world_lambda_role = "hello_world_lambda"
 }
 
