@@ -18,7 +18,7 @@
   - entryId
   - date
   - data
-  - type: comment, reply, etc...
+  - type: comment, reply, etc...    
     - type=0 -> main entry
     - type>0 -> entry aggregate
 

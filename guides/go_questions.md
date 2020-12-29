@@ -1,0 +1,8 @@
+- how to pretty-print struct/Object/JSON?
+  - https://golangbyexample.com/print-struct-variables-golang/
+    - `fmt.Printf("%#v", emp)`
+- how to do descriminated union types (`type MyType = "A" | "B"`) or enums?
+- map/filter/reduce?? :(
+- promiseAll (batch parallel work?)
+- how to parse json of uknown format?
+  - https://stackoverflow.com/questions/33436730/unmarshal-json-with-some-known-and-some-unknown-field-names

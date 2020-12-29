@@ -6,27 +6,31 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"time"
 
 	"golang.org/x/oauth2"
 
 	"github.com/diogoamvasconcelos/social_watcher/src/lib"
 )
 
-type SearchResultTweet struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
+type TwitterSearchResultTweet struct {
+	ID             string    `json:"id"`
+	Text           string    `json:"text"`
+	CreatedAt      time.Time `json:"created_at"`
+	ConversationID string    `json:"conversationId"`
+	Lang           string    `json:"lang"`
 }
 
-type SearchResultMetadata struct {
+type TwitterSearchResultMetadata struct {
 	NewestID    string `json:"newest_id"`
 	OldestID    string `json:"oldest_id"`
 	ResultCount int    `json:"result_count"`
 	NextToken   string `json:"next_token"`
 }
 
-type SearchResult struct {
-	Data []SearchResultTweet  `json:"data"`
-	Meta SearchResultMetadata `json:"meta"`
+type TwitterSearchResult struct {
+	Data []TwitterSearchResultTweet  `json:"data"`
+	Meta TwitterSearchResultMetadata `json:"meta"`
 }
 
 type twitterBotCredentials struct {
@@ -35,7 +39,7 @@ type twitterBotCredentials struct {
 	BearerToken  string `json:"BearerToken"`
 }
 
-func SearchTwitter(keyword string) SearchResult {
+func SearchTwitter(keyword string) TwitterSearchResult {
 	log.Printf("SearchTwitter keyword: %v", keyword)
 
 	ssmClient := lib.NewSSMClient()
@@ -56,7 +60,12 @@ func SearchTwitter(keyword string) SearchResult {
 	}))
 
 	// https://developer.twitter.com/en/docs/twitter-api/tweets/search/api-reference/get-tweets-search-recent
-	resp, err := client.Get(fmt.Sprintf("https://api.twitter.com/2/tweets/search/recent?query=%s", keyword))
+	queryParams := fmt.Sprintf("query=%s", keyword)
+	queryParams += "&max_results=100"                                                //max
+	queryParams += fmt.Sprintf("&start_time=%s", lib.ToISO8061(lib.MinutesAgo(120))) // 2 hours ago
+	queryParams += "&place.fields=country"
+	queryParams += "&tweet.fields=created_at,lang,conversation_id"
+	resp, err := client.Get(fmt.Sprintf("https://api.twitter.com/2/tweets/search/recent?%s", queryParams))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -69,13 +78,12 @@ func SearchTwitter(keyword string) SearchResult {
 		log.Fatal(err)
 	}
 
-	var body SearchResult
+	var body TwitterSearchResult
 	err = json.Unmarshal(bodyBinary, &body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Print("Search Result Body", body)
+	log.Printf("Search Result count: %#v", body.Meta.ResultCount)
 
 	return body
-
 }

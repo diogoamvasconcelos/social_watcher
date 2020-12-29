@@ -5,3 +5,14 @@
 - ddbstream consumer lambda -> consumes and posts discord
   - v1: consumes and logs
   - v2: posts to discord
+  - v3: translates if not english?
+
+
+- CI/Dev
+  - Run lambda locally
+  - Unit Tests
+  - Integration Tests
+  - Environment Tests
+  - Test coverage
+  - Vulnerability scans
+  - Behaviour test (cucumber?)

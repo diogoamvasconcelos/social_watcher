@@ -23,9 +23,10 @@ func handleRequest(ctx context.Context, event events.CloudWatchEvent) (string, e
 	}
 
 	log.Printf("Event data: %v", data)
-	controllers.SearchTwitter(data.Keyword)
+	items := controllers.SearchTwitter(data.Keyword)
 
-	return "Success", nil
+	result := controllers.StoreItems(items)
+	return result, nil
 }
 
 func main() {
