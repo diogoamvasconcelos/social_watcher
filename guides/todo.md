@@ -1,6 +1,7 @@
 - cloudwatch event trigger for lambda
 - twitterLambda(keyword) -> searches twitter (last hour/day) and adds to ddb
   - v1: searches last hour
+    - writes to ddb (batches in parallel?)
   - v2: also searches for replies on main entries 7days
 - ddbstream consumer lambda -> consumes and posts discord
   - v1: consumes and logs

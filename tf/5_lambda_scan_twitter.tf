@@ -15,6 +15,12 @@ resource "aws_lambda_function" "watch_twitter_lambda" {
   source_code_hash = "${filebase64sha256("${local.watch_twitter_lambda_file}")}"
   description      = "Watch Twitter Lambda"
   depends_on       = ["aws_cloudwatch_log_group.watch_twitter_lambda"]
+
+  environment {
+    variables = {
+      "STORED_ITEMS_TABLE_NAME" = "${aws_dynamodb_table.stored_items.name}"
+    }
+  }
 }
 
 resource "aws_cloudwatch_log_group" "watch_twitter_lambda" {

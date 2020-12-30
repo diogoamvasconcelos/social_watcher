@@ -3,7 +3,6 @@ package lib
 import (
 	"log"
 
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ssm"
 	"github.com/aws/aws-sdk-go/service/ssm/ssmiface"
 )
@@ -13,15 +12,9 @@ type SSM struct {
 	client ssmiface.SSMAPI
 }
 
-func sessions() (*session.Session, error) {
-	sess, err := session.NewSession()
-	svc := session.Must(sess, err)
-	return svc, err
-}
-
 func NewSSMClient() *SSM {
 	// Create AWS Session
-	sess, err := sessions()
+	sess, err := AWSSessions()
 	if err != nil {
 		log.Println(err)
 		return nil

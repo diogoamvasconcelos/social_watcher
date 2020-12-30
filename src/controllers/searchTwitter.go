@@ -61,8 +61,8 @@ func SearchTwitter(keyword string) TwitterSearchResult {
 
 	// https://developer.twitter.com/en/docs/twitter-api/tweets/search/api-reference/get-tweets-search-recent
 	queryParams := fmt.Sprintf("query=%s", keyword)
-	queryParams += "&max_results=100"                                                //max
-	queryParams += fmt.Sprintf("&start_time=%s", lib.ToISO8061(lib.MinutesAgo(120))) // 2 hours ago
+	queryParams += "&max_results=100" //max
+	queryParams += fmt.Sprintf("&start_time=%s", lib.ToISO8061(lib.MinutesAgo(60*6)))
 	queryParams += "&place.fields=country"
 	queryParams += "&tweet.fields=created_at,lang,conversation_id"
 	resp, err := client.Get(fmt.Sprintf("https://api.twitter.com/2/tweets/search/recent?%s", queryParams))
@@ -83,6 +83,7 @@ func SearchTwitter(keyword string) TwitterSearchResult {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Printf("Search Result: %#v", body)
 	log.Printf("Search Result count: %#v", body.Meta.ResultCount)
 
 	return body

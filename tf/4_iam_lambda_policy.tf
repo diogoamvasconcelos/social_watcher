@@ -45,6 +45,13 @@ resource "aws_iam_policy" "lambda_default" {
       ],
       "Resource": "arn:aws:ssm:*:*",
       "Effect": "Allow"
+    },
+    {
+      "Action": [
+        "dynamodb:*"
+      ],
+      "Resource": "arn:aws:dynamodb:*:*",
+      "Effect": "Allow"
     }
   ]
 }

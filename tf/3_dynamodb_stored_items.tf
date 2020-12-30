@@ -15,18 +15,32 @@ resource "aws_dynamodb_table" "stored_items" {
     type = "S"
   }
   attribute {
-    name = "GSIPK"
+    name = "GSI1PK"
     type = "S"
   }
   attribute {
-    name = "GSISK"
+    name = "GSI1SK"
+    type = "S"
+  }
+  attribute {
+    name = "GSI2PK"
+    type = "S"
+  }
+  attribute {
+    name = "GSI2SK"
     type = "S"
   }
 
   global_secondary_index {
-    name            = "GSI"
-    hash_key        = "GSIPK"
-    range_key       = "GSISK"
+    name            = "GSI1"
+    hash_key        = "GSI1PK"
+    range_key       = "GSI1SK"
+    projection_type = "ALL"
+  }
+  global_secondary_index {
+    name            = "GSI2"
+    hash_key        = "GSI2PK"
+    range_key       = "GSI2SK"
     projection_type = "ALL"
   }
 }

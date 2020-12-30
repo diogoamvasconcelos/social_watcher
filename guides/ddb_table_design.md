@@ -41,6 +41,3 @@ sk: index
 - source:
   - pk: source
   - sk: date
-- day:
-  - pk: day
-  - sk: source
