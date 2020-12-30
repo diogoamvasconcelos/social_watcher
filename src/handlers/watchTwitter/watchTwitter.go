@@ -31,6 +31,5 @@ func handleRequest(ctx context.Context, event events.CloudWatchEvent) (string, e
 
 func main() {
 	log.SetPrefix("WatchTrigger: ")
-
 	lambda.Start(handleRequest)
 }

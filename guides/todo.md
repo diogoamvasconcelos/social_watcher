@@ -8,6 +8,9 @@
   - v2: posts to discord
   - v3: translates if not english?
 
+- Go improvements:
+  - Use the AWS SDK v2: https://aws.github.io/aws-sdk-go-v2/docs/
+
 
 - CI/Dev
   - Run lambda locally

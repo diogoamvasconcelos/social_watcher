@@ -6,3 +6,5 @@
 - promiseAll (batch parallel work?)
 - how to parse json of uknown format?
   - https://stackoverflow.com/questions/33436730/unmarshal-json-with-some-known-and-some-unknown-field-names
+- Lambda hanlders need to be of `package main` ? If true, how to have two handlers/files on the same folder?
+- unmarshalling dynamodb streams problem: https://stackoverflow.com/questions/49129534/unmarshal-mapstringdynamodbattributevalue-into-a-struct (OMG!!!)

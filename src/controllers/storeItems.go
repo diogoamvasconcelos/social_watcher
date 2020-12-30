@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/diogoamvasconcelos/social_watcher/src/lib"
@@ -65,7 +66,7 @@ func fromTwitterSearchItemToStoredItem(item TwitterSearchResultTweet) StoredItem
 func fromStoredItemToDynamoDBItem(item StoredItem) DynamoDBItem {
 	return DynamoDBItem{
 		PK:     item.ID,
-		SK:     fmt.Sprint(item.ItemIndex),
+		SK:     strconv.Itoa(item.ItemIndex),
 		GSI1PK: "All",
 		GSI1SK: lib.ToISO8061(item.HappenedAt),
 		GSI2PK: item.SourceType,

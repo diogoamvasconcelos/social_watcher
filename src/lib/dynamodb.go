@@ -1,3 +1,5 @@
+// Reference: https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/using-dynamodb-with-go-sdk.html
+
 package lib
 
 import (
