@@ -1,23 +1,23 @@
 locals {
-    main_api_name = "main_api"
-    main_api_openapi_spec_file = "${var.tf_dir}/main_api_spec.yaml"
-    main_api_stage_name = "api"
+  main_api_name              = "main_api"
+  main_api_openapi_spec_file = "${var.tf_dir}/main_api_spec.yaml"
+  main_api_stage_name        = "api"
 }
 
-data "template_file" main_api_openapi_spec_swagger{
+data "template_file" main_api_openapi_spec_swagger {
   template = "${file("${local.main_api_openapi_spec_file}")}"
-  
+
   vars = {
     hello_world_lambda_inv_arn = "${aws_lambda_function.hello_world_lambda.invoke_arn}"
-    main_api_role_arn = "${aws_iam_role.main_api.arn}"
+    main_api_role_arn          = "${aws_iam_role.main_api.arn}"
   }
 }
 
 resource "aws_api_gateway_rest_api" "main_api" {
-  name = "${local.main_api_name}"
+  name        = "${local.main_api_name}"
   description = "Main REST API"
   endpoint_configuration {
-      types = ["EDGE"] #https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-endpoint-types.html
+    types = ["EDGE"] #https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-endpoint-types.html
   }
   body = "${data.template_file.main_api_openapi_spec_swagger.rendered}"
 }
@@ -28,7 +28,7 @@ resource "aws_api_gateway_deployment" "main_api" {
     "aws_api_gateway_account.main_api",
   ]
   rest_api_id = "${aws_api_gateway_rest_api.main_api.id}"
-  stage_name = "${local.main_api_stage_name}"
+  stage_name  = "${local.main_api_stage_name}"
 }
 
 resource "aws_api_gateway_account" "main_api" {
@@ -56,7 +56,7 @@ EOF
 }
 
 resource "aws_iam_policy" "main_api" {
-  name = "main_api"
+  name        = "main_api"
   description = "IAM policy for main API Gateway - Lambda Invocations"
 
   policy = <<EOF
@@ -90,7 +90,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "main_api" {
-  role = "${aws_iam_role.main_api.name}"
+  role       = "${aws_iam_role.main_api.name}"
   policy_arn = "${aws_iam_policy.main_api.arn}"
 }
 
@@ -99,15 +99,15 @@ resource "aws_api_gateway_method_settings" "main_api" {
   stage_name  = "${aws_api_gateway_deployment.main_api.stage_name}"
   method_path = "*/*"
   settings {
-    logging_level = "INFO"
+    logging_level      = "INFO"
     data_trace_enabled = true
-    metrics_enabled = true
+    metrics_enabled    = true
   }
 }
 
-output "main_apigateway_base_url"{
+output "main_apigateway_base_url" {
   value = "${aws_api_gateway_deployment.main_api.invoke_url}"
 }
-output "main_apigateway_id"{
+output "main_apigateway_id" {
   value = "${aws_api_gateway_rest_api.main_api.id}"
 }

@@ -4,5 +4,5 @@ variable "out_dir" {}
 variable "tf_dir" {}
 
 provider "aws" {
-    region = "${var.aws_region}"
+  region = "${var.aws_region}"
 }

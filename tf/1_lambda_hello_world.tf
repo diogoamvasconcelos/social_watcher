@@ -1,8 +1,8 @@
 locals {
-    hello_world_lambda_file = "${var.out_dir}/hello_world_lambda.zip"
-    hello_world_lambda_name = "hello_world_lambda"
-    hello_world_lambda_handler = "hello_world_lambda"
-    hello_world_lambda_role = "hello_world_lambda"
+  hello_world_lambda_file    = "${var.out_dir}/hello_world_lambda.zip"
+  hello_world_lambda_name    = "hello_world_lambda"
+  hello_world_lambda_handler = "hello_world_lambda"
+  hello_world_lambda_role    = "hello_world_lambda"
 }
 
 resource "aws_lambda_function" "hello_world_lambda" {
@@ -11,13 +11,15 @@ resource "aws_lambda_function" "hello_world_lambda" {
   handler          = "${local.hello_world_lambda_handler}"
   role             = "${aws_iam_role.hello_world_lambda.arn}"
   runtime          = "go1.x"
-  memory_size      = "512" 
+  memory_size      = "512"
   timeout          = "3"
   source_code_hash = "${filebase64sha256("${local.hello_world_lambda_file}")}"
   description      = "Hello World Lambda"
-  depends_on       = ["aws_cloudwatch_log_group.hello_world_lambda", 
-                      "aws_iam_role.hello_world_lambda",
-                      "aws_iam_role_policy_attachment.hello_world_lambda"]
+  depends_on = [
+    "aws_cloudwatch_log_group.hello_world_lambda",
+    "aws_iam_role.hello_world_lambda",
+    "aws_iam_role_policy_attachment.hello_world_lambda"
+  ]
 }
 
 resource "aws_cloudwatch_log_group" "hello_world_lambda" {
@@ -46,8 +48,8 @@ EOF
 }
 
 resource "aws_iam_policy" "hello_world_lambda" {
-  name = "${local.hello_world_lambda_name}"
-  path = "/"
+  name        = "${local.hello_world_lambda_name}"
+  path        = "/"
   description = "IAM policy for Hello World lambda - Logging"
 
   policy = <<EOF
@@ -68,6 +70,6 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "hello_world_lambda" {
-  role = "${aws_iam_role.hello_world_lambda.name}"
+  role       = "${aws_iam_role.hello_world_lambda.name}"
   policy_arn = "${aws_iam_policy.hello_world_lambda.arn}"
 }
