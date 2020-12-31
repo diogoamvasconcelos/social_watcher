@@ -33,6 +33,7 @@ resource "aws_iam_policy" "lambda_default" {
   "Statement": [
     {
       "Action": [
+        "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents"
       ],
