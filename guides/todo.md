@@ -3,6 +3,7 @@
   - v1: searches last hour
     - writes to ddb (batches in parallel?)
     - make `keyword` part of the stored item data (and queriable, and post it on slack)
+    - keyword - channel config.yaml
   - v2: also searches for replies on main entries 7days
 - ddbstream consumer lambda -> consumes and posts discord
   - v3: translates if not english?

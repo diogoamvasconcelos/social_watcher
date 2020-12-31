@@ -37,7 +37,7 @@ func PostToDiscord(item StoredItem) string {
 	}
 
 	var message string
-	message += "> New Twitter message"
+	message += fmt.Sprintf("> New Twitter message (%s)", item.Data.Lang)
 	message += "\n"
 	message += item.Link
 	messageResult, err := discordClient.ChannelMessageSend("794147209976741918", message)

@@ -17,7 +17,7 @@ type TwitterSearchResultTweet struct {
 	ID             string    `json:"id"`
 	Text           string    `json:"text"`
 	CreatedAt      time.Time `json:"created_at"`
-	ConversationID string    `json:"conversationId"`
+	ConversationID string    `json:"conversation_id"`
 	Lang           string    `json:"lang"`
 }
 
