@@ -2,15 +2,13 @@
 - twitterLambda(keyword) -> searches twitter (last hour/day) and adds to ddb
   - v1: searches last hour
     - writes to ddb (batches in parallel?)
+    - make `keyword` part of the stored item data (and queriable, and post it on slack)
   - v2: also searches for replies on main entries 7days
 - ddbstream consumer lambda -> consumes and posts discord
-  - v1: consumes and logs
-  - v2: posts to discord
   - v3: translates if not english?
 
 - Go improvements:
   - Use the AWS SDK v2: https://aws.github.io/aws-sdk-go-v2/docs/
-
 
 - CI/Dev
   - Run lambda locally

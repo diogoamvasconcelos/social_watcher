@@ -13,10 +13,14 @@ https://docs.aws.amazon.com/lambda/latest/dg/golang-package.html
 ```
 go get github.com/aws/aws-lambda-go/lambda
 go get github.com/aws/aws-lambda-go/events
-go get github.com/dghubble/go-twitter/twitter
+go get github.com/bwmarrin/discordgo
 ```
 
 ### GOLANG tuts
 - https://golang.org/doc/tutorial/create-module
 - https://tour.golang.org/welcome/1
 - https://golang.org/doc/effective_go.html
+
+## Discord bot
+  - guide: https://medium.com/@thomlom/how-to-create-a-discord-bot-under-15-minutes-fb2fd0083844
+  - client/sdk: https://github.com/bwmarrin/discordgo

@@ -33,7 +33,11 @@ func handleRequest(ctx context.Context, event events.DynamoDBEvent) (string, err
 		if err != nil {
 			log.Fatalf("Failed to convert DynamoDBItem to StoredItem, %v", err)
 		}
-		log.Printf("New StoreItem: %#v", storedItem)
+
+		res := controllers.PostToDiscord(storedItem)
+		if res == "ERROR" {
+			log.Fatalf("Failed to post item to discord: %#v", storedItem)
+		}
 	}
 
 	return "OK", nil
