@@ -3,6 +3,7 @@
 THIS_PATH="$(dirname "$(realpath "$0")")"
 TMP_DIR=$THIS_PATH/../.tmp
 
+CONFIG_REL_DIR="configuration"
 
 # Reset OUT_DIR
 rm -rf $OUT_DIR
@@ -16,6 +17,8 @@ createLambdaArtifact() {
   rm -f $TMP_DIR/$LAMBDA_ARTIFACT
   GOOS=linux go build -o $TMP_DIR/$LAMBDA_ARTIFACT $THIS_PATH/../src/$LAMBDA_FN_SRC_PATH
   zip -qjr $OUT_DIR/$LAMBDA_ARTIFACT.zip $TMP_DIR/$LAMBDA_ARTIFACT
+  # Add config folder
+  zip -gr $OUT_DIR/$LAMBDA_ARTIFACT.zip $CONFIG_REL_DIR
 }
 
 createLambdaArtifact hello_world_lambda hello.go
