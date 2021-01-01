@@ -72,7 +72,7 @@ func PostToDiscord(item StoredItem) string {
 	}
 
 	var message string
-	message += fmt.Sprintf("> New '%s' Twitter message (lang=%s)", keyword, item.Data.Lang)
+	message += fmt.Sprintf("> New `%s` Twitter message (lang=%s)", keyword, item.Data.Lang)
 	message += "\n"
 	message += item.Link
 

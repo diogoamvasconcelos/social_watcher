@@ -60,7 +60,9 @@ func SearchTwitter(keyword string) TwitterSearchResult {
 	}))
 
 	// https://developer.twitter.com/en/docs/twitter-api/tweets/search/api-reference/get-tweets-search-recent
+	// https://developer.twitter.com/en/docs/twitter-api/tweets/search/integrate/build-a-rule (for filter retweets)
 	queryParams := fmt.Sprintf("query=%s", keyword)
+	queryParams += "%20-is:retweet"
 	queryParams += "&max_results=100" //max
 	queryParams += fmt.Sprintf("&start_time=%s", lib.ToISO8061(lib.MinutesAgo(60*4)))
 	queryParams += "&place.fields=country"

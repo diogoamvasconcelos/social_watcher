@@ -11,7 +11,7 @@ resource "aws_lambda_function" "ddb_stream_consumer" {
   role             = "${aws_iam_role.lambda_default.arn}"
   runtime          = "go1.x"
   memory_size      = "512"
-  timeout          = "10"
+  timeout          = "30"
   source_code_hash = "${filebase64sha256("${local.ddb_stream_consumer_file}")}"
   description      = "WDynamoDB Stream Consumer"
   depends_on       = ["aws_cloudwatch_log_group.ddb_stream_consumer"]

@@ -3,13 +3,16 @@
   - v1: searches last hour
     - writes to ddb (batches in parallel?)
     - make `keyword` part of the stored item data (and queriable, and post it on slack)
-    - keyword - channel config.yaml
   - v2: also searches for replies on main entries 7days
 - ddbstream consumer lambda -> consumes and posts discord
   - v3: translates if not english?
 
 - Go improvements:
   - Use the AWS SDK v2: https://aws.github.io/aws-sdk-go-v2/docs/
+
+- Add emojis for retweets
+  - remove the filter for retweets
+  - on retweet, check original, get message and add emoji (lots of work...)
 
 - CI/Dev
   - Run lambda locally
