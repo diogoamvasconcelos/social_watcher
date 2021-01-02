@@ -9,18 +9,19 @@ import (
 )
 
 type eventData struct {
-	Keyword string `json:"keyword"`
+	Website string `json:"website"`
 }
 
 func handleRequest(ctx context.Context, event eventData) (string, error) {
 	log.Printf("Event data: %v", event)
-	items := controllers.SearchTwitter(event.Keyword)
+	healthcheckResult := controllers.HealthcheckWebsite(event.Website)
 
-	result := controllers.StoreItems(items)
-	return result, nil
+	log.Printf("Result %#v", healthcheckResult)
+	//TODO check stored, if different update and post to slack :)
+	return "OK", nil
 }
 
 func main() {
-	log.SetPrefix("WatchTwitter: ")
+	log.SetPrefix("HealthcheckWebsite: ")
 	lambda.Start(handleRequest)
 }

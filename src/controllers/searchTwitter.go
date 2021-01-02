@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"time"
 
@@ -71,11 +70,9 @@ func SearchTwitter(keyword string) TwitterSearchResult {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer resp.Body.Close()
-
 	log.Printf("Search Response status: %v", resp.Status)
 
-	bodyBinary, err := ioutil.ReadAll(resp.Body)
+	bodyBinary, err := lib.GetBodyBinaryFromHttpResp(resp)
 	if err != nil {
 		log.Fatal(err)
 	}

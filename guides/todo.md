@@ -18,3 +18,9 @@
   - Test coverage
   - Vulnerability scans
   - Behaviour test (cucumber?)
+
+Pureref.com healthcheck
+- similar to https://downforeveryoneorjustme.com/pureref.com
+  - curl 'https://api-prod.downfor.cloud/httpcheck/http://pureref.com' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0' -H 'Accept: */*' -H 'Accept-Language: en-US,en;q=0.5' --compressed -H 'Referer: https://downforeveryoneorjustme.com/pureref.com' -H 'Origin: https://downforeveryoneorjustme.com' -H 'Connection: keep-alive'
+    - {"statusCode":0,"statusText":"timed out","isDown":true,"returnedUrl":"http://pureref.com","requestedDomain":"http://pureref.com","lastChecked":1609600275103}
+    - {"statusCode":200,"statusText":"OK","isDown":false,"returnedUrl":"http://www.google.com/","requestedDomain":"http://google.com","lastChecked":1609600320737}
