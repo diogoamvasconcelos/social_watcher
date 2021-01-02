@@ -1,24 +1,24 @@
 
 locals {
-  ddb_stream_consumer_name = "ddb_stream_consumer"
-  ddb_stream_consumer_file = "${var.out_dir}/${local.ddb_stream_consumer_name}.zip"
+  ddb_stream_consumer_lambda_name = "ddb_stream_consumer"
+  ddb_stream_consumer_lambda_file = "${var.out_dir}/${local.ddb_stream_consumer_lambda_name}.zip"
 }
 
 resource "aws_lambda_function" "ddb_stream_consumer" {
-  filename         = "${local.ddb_stream_consumer_file}"
-  function_name    = "${local.ddb_stream_consumer_name}"
-  handler          = "${local.ddb_stream_consumer_name}"
+  filename         = "${local.ddb_stream_consumer_lambda_file}"
+  function_name    = "${local.ddb_stream_consumer_lambda_name}"
+  handler          = "${local.ddb_stream_consumer_lambda_name}"
   role             = "${aws_iam_role.lambda_default.arn}"
   runtime          = "go1.x"
   memory_size      = "512"
   timeout          = "30"
-  source_code_hash = "${filebase64sha256("${local.ddb_stream_consumer_file}")}"
+  source_code_hash = "${filebase64sha256("${local.ddb_stream_consumer_lambda_file}")}"
   description      = "WDynamoDB Stream Consumer"
   depends_on       = ["aws_cloudwatch_log_group.ddb_stream_consumer"]
 }
 
 resource "aws_cloudwatch_log_group" "ddb_stream_consumer" {
-  name              = "/aws/lambda/${local.ddb_stream_consumer_name}"
+  name              = "/aws/lambda/${local.ddb_stream_consumer_lambda_name}"
   retention_in_days = 30
 }
 

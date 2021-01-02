@@ -23,21 +23,23 @@ func NewDynamoClient() *dynamodb.DynamoDB {
 	return dynamodbsvc
 }
 
-func DynamoDBPutItem(dynamodbsvc *dynamodb.DynamoDB, tableName string, item interface{}) string {
-	av, err := dynamodbattribute.MarshalMap(item)
+func DynamoDBPutItem(dynamodbsvc *dynamodb.DynamoDB, tableName string, item interface{}, conditionExpression string) string {
+	dbItem, err := dynamodbattribute.MarshalMap(item)
 	if err != nil {
-		log.Println("DynamoDB: Got error marshalling new movie item:")
+		log.Println("DynamoDB: Got error marshalling item:")
 		log.Println(err.Error())
 		return "ERROR"
 	}
 
-	input := &dynamodb.PutItemInput{
-		Item:                av,
-		TableName:           aws.String(tableName),
-		ConditionExpression: aws.String("attribute_not_exists(PK)"),
+	input := dynamodb.PutItemInput{
+		TableName: aws.String(tableName),
+		Item:      dbItem,
+	}
+	if conditionExpression != "" {
+		input.ConditionExpression = aws.String(conditionExpression)
 	}
 
-	_, err = dynamodbsvc.PutItem(input)
+	_, err = dynamodbsvc.PutItem(&input)
 	if err != nil {
 		log.Println("DynamoDB: Got error calling PutItem:")
 		log.Println(err.Error())
@@ -49,4 +51,21 @@ func DynamoDBPutItem(dynamodbsvc *dynamodb.DynamoDB, tableName string, item inte
 	}
 
 	return "OK"
+}
+
+func DynamoDBGetItem(dynamodbsvc *dynamodb.DynamoDB, tableName string, key interface{}) (map[string]*dynamodb.AttributeValue, error) {
+	dbKey, err := dynamodbattribute.MarshalMap(key)
+	if err != nil {
+		log.Println("DynamoDB: Got error marshalling key:")
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	input := dynamodb.GetItemInput{
+		TableName: aws.String(tableName),
+		Key:       dbKey,
+	}
+
+	result, err := dynamodbsvc.GetItem(&input)
+	return result.Item, nil
 }

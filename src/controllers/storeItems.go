@@ -40,7 +40,7 @@ func StoreItems(items TwitterSearchResult) string {
 
 		dynamodbItem := fromStoredItemToDynamoDBItem(storedItem)
 
-		result := lib.DynamoDBPutItem(dynamodbClient, storedItemsTableName, dynamodbItem)
+		result := lib.DynamoDBPutItem(dynamodbClient, storedItemsTableName, dynamodbItem, "attribute_not_exists(PK)")
 		log.Printf("Put DynamoDB item result: %v", result)
 		if result == "ERROR" {
 			log.Fatal("Failed to store item in:", storedItemsTableName)
@@ -64,13 +64,15 @@ func fromTwitterSearchItemToStoredItem(item TwitterSearchResultTweet) StoredItem
 }
 
 func fromStoredItemToDynamoDBItem(item StoredItem) DynamoDBItem {
+	happenedAtString := lib.ToISO8061(item.HappenedAt)
+
 	return DynamoDBItem{
 		PK:     item.ID,
 		SK:     strconv.Itoa(item.ItemIndex),
 		GSI1PK: "All",
-		GSI1SK: lib.ToISO8061(item.HappenedAt),
+		GSI1SK: happenedAtString,
 		GSI2PK: item.SourceType,
-		GSI2SK: lib.ToISO8061(item.HappenedAt),
+		GSI2SK: happenedAtString,
 		Link:   item.Link,
 		Data:   item.Data,
 	}

@@ -22,5 +22,6 @@ createLambdaArtifact() {
 }
 
 createLambdaArtifact hello_world_lambda hello.go
-createLambdaArtifact watch_twitter_lambda handlers/watchTwitter/watchTwitter.go
+createLambdaArtifact watch_twitter handlers/watchTwitter/watchTwitter.go
 createLambdaArtifact ddb_stream_consumer handlers/ddbStreamConsumer/ddbStreamConsumer.go
+createLambdaArtifact healthcheck_website handlers/healthcheckWebsite/healthcheckWebsite.go

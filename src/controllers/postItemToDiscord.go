@@ -14,7 +14,7 @@ type KeywordConfig struct {
 	Value    string   `yaml:"value"`
 	Channels []string `yaml:"channels"`
 }
-type KeywordMappingConfig struct {
+type MappingsConfig struct {
 	Keyword []KeywordConfig `yaml:"keywords"`
 }
 
@@ -23,7 +23,7 @@ type discordBotCredentials struct {
 	Token    string `json:"Token"`
 }
 
-var keywordMappingConfigPath = "configuration/keyword_mapping.yaml"
+var keywordMappingConfigPath = "configuration/mappings.yaml"
 
 func PostToDiscord(item StoredItem) string {
 	// Get keywordConfig
@@ -32,15 +32,15 @@ func PostToDiscord(item StoredItem) string {
 		log.Fatalf("Failed to open '%s': %v", keywordMappingConfigPath, err)
 	}
 
-	keywordMapping := KeywordMappingConfig{}
-	err = yaml.Unmarshal([]byte(data), &keywordMapping)
+	mappingsConfig := MappingsConfig{}
+	err = yaml.Unmarshal([]byte(data), &mappingsConfig)
 	if err != nil {
 		log.Fatalf("Failed to Unmarshal yaml: %v", err)
 	}
 
 	keyword := "pureref"
 	keywordConfig := KeywordConfig{}
-	for _, mapping := range keywordMapping.Keyword {
+	for _, mapping := range mappingsConfig.Keyword {
 		if mapping.Value == keyword {
 			keywordConfig = mapping
 			break
