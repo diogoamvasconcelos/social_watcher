@@ -10,10 +10,6 @@
 - Go improvements:
   - Use the AWS SDK v2: https://aws.github.io/aws-sdk-go-v2/docs/
 
-- Add emojis for retweets
-  - remove the filter for retweets
-  - on retweet, check original, get message and add emoji (lots of work...)
-
 - CI/Dev
   - Run lambda locally
   - Unit Tests
