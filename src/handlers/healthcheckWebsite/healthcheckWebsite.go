@@ -31,23 +31,31 @@ func handleRequest(ctx context.Context, event eventData) (string, error) {
 		log.Fatal(nil)
 	}
 
-	lastHealthCheckData := controllers.HealthcheckWebsiteResult{}
-	err = json.Unmarshal([]byte(lastHealthCheck.Data), &lastHealthCheckData)
-	if err != nil {
-		log.Fatal(err)
+	/// Update if not found
+	shouldUpdateHealthCheck := lastHealthCheck == controllers.MainItem{}
+	if !shouldUpdateHealthCheck {
+
+		lastHealthCheckData := controllers.HealthcheckWebsiteResult{}
+		err = json.Unmarshal([]byte(lastHealthCheck.Data), &lastHealthCheckData)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Update if `IsUp` changed
+		shouldUpdateHealthCheck = healthcheckResult.IsUp != lastHealthCheckData.IsUp
 	}
 
-	if healthcheckResult.IsUp != lastHealthCheckData.IsUp {
+	if shouldUpdateHealthCheck {
 		log.Printf("Updating healthcheck for website: %s -> new value:%v", event.Website, healthcheckResult.IsUp)
 
 		controllers.PutMainItem(controllers.MainItem{
 			ID:        toMainItemID(event.Website),
-			Type:      "health_check",
+			Type:      "healthcheck",
 			UpdatedAt: lib.MinutesAgo(0),
 			Data:      resultStringified,
 		})
 
-		// TODO: post to Discord
+		controllers.PostHealthcheckToDiscord(healthcheckResult)
 	} else {
 		log.Printf("No need to update healthcheck for website: %s -> still:%v", event.Website, healthcheckResult.IsUp)
 	}
@@ -61,5 +69,5 @@ func main() {
 }
 
 func toMainItemID(website string) string {
-	return fmt.Sprintf("health_check|%s", website)
+	return fmt.Sprintf("healthcheck|%s", website)
 }

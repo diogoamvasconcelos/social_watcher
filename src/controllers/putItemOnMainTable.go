@@ -10,7 +10,7 @@ import (
 
 type MainItem struct {
 	ID        string // Type|ID
-	Type      string // health_check
+	Type      string // healthcheck
 	UpdatedAt time.Time
 	Data      string
 }

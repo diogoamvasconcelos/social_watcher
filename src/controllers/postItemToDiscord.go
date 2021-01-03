@@ -14,11 +14,16 @@ type KeywordConfig struct {
 	Value    string   `yaml:"value"`
 	Channels []string `yaml:"channels"`
 }
+
+type GenericConfig struct {
+	Channels []string `yaml:"channels"`
+}
 type MappingsConfig struct {
-	Keyword []KeywordConfig `yaml:"keywords"`
+	Keyword     []KeywordConfig `yaml:"keywords"`
+	HealthCheck GenericConfig   `yaml:"healthcheck"`
 }
 
-type discordBotCredentials struct {
+type DiscordBotCredentials struct {
 	Username string `json:"Username"`
 	Token    string `json:"Token"`
 }
@@ -27,16 +32,7 @@ var keywordMappingConfigPath = "configuration/mappings.yaml"
 
 func PostToDiscord(item StoredItem) string {
 	// Get keywordConfig
-	data, err := ioutil.ReadFile(keywordMappingConfigPath)
-	if err != nil {
-		log.Fatalf("Failed to open '%s': %v", keywordMappingConfigPath, err)
-	}
-
-	mappingsConfig := MappingsConfig{}
-	err = yaml.Unmarshal([]byte(data), &mappingsConfig)
-	if err != nil {
-		log.Fatalf("Failed to Unmarshal yaml: %v", err)
-	}
+	mappingsConfig := GetMappingsConfig()
 
 	keyword := "pureref"
 	keywordConfig := KeywordConfig{}
@@ -47,19 +43,8 @@ func PostToDiscord(item StoredItem) string {
 		}
 	}
 
-	// Get Discord credentials
-	ssmClient := lib.NewSSMClient()
-	ssmResult, ssmErr := ssmClient.Param("discord_bot_keys", true).GetValue()
-	if ssmErr != nil {
-		log.Fatal(ssmErr)
-	}
-	var credentials discordBotCredentials
-	err = json.Unmarshal([]byte(ssmResult), &credentials)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// Discord Client
+	credentials := GetDiscordCredentials()
 	discordClient, err := lib.NewDiscordClient(credentials.Token)
 	if err != nil {
 		return "ERROR"
@@ -87,4 +72,34 @@ func PostToDiscord(item StoredItem) string {
 
 	discordClient.Close()
 	return "SUCCESS"
+}
+
+func GetMappingsConfig() MappingsConfig {
+	data, err := ioutil.ReadFile(keywordMappingConfigPath)
+	if err != nil {
+		log.Fatalf("Failed to open '%s': %v", keywordMappingConfigPath, err)
+	}
+
+	mappingsConfig := MappingsConfig{}
+	err = yaml.Unmarshal([]byte(data), &mappingsConfig)
+	if err != nil {
+		log.Fatalf("Failed to Unmarshal yaml: %v", err)
+	}
+
+	return mappingsConfig
+}
+
+func GetDiscordCredentials() DiscordBotCredentials {
+	ssmClient := lib.NewSSMClient()
+	ssmResult, ssmErr := ssmClient.Param("discord_bot_keys", true).GetValue()
+	if ssmErr != nil {
+		log.Fatal(ssmErr)
+	}
+	var credentials DiscordBotCredentials
+	err := json.Unmarshal([]byte(ssmResult), &credentials)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return credentials
 }

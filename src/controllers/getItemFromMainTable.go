@@ -20,19 +20,24 @@ func GetMainItem(key MainItemKey) (MainItem, error) {
 
 	result, err := lib.DynamoDBGetItem(dynamodbClient, mainTableName, key)
 	if err != nil {
-		log.Print("Failed to get item", err)
+		log.Print("Failed to get item: ", err)
 		return MainItem{}, err
+	}
+
+	if len(result) == 0 {
+		// Not found
+		return MainItem{}, nil
 	}
 
 	dbitem := DynamoDBMainItem{}
 	err = dynamodbattribute.UnmarshalMap(result, &dbitem)
 	if err != nil {
-		log.Fatal("Failed to unmarshall dbitem", err)
+		log.Fatal("Failed to unmarshall dbitem: ", err)
 	}
 
 	item, err := fromDynamoDBMainItemToMainItem(dbitem)
 	if err != nil {
-		log.Fatal("Failed to convert dbitem to MainItem", err)
+		log.Fatal("Failed to convert dbitem to MainItem: ", err)
 	}
 
 	return item, nil

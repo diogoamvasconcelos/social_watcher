@@ -10,7 +10,8 @@ import (
 )
 
 type HealthcheckWebsiteResult struct {
-	IsUp bool
+	Website string
+	IsUp    bool
 }
 
 type DownforHttpCheckResponse struct {
@@ -25,7 +26,7 @@ func HealthcheckWebsite(website string) HealthcheckWebsiteResult {
 
 	resp, err := http.Get(fmt.Sprintf("https://api-prod.downfor.cloud/httpcheck/%s", website))
 	if err != nil {
-		log.Fatal("Failed to check 'downfor'", err)
+		log.Fatal("Failed to check 'downfor': ", err)
 	}
 
 	bodyBinary, err := lib.GetBodyBinaryFromHttpResp(resp)
@@ -40,6 +41,7 @@ func HealthcheckWebsite(website string) HealthcheckWebsiteResult {
 	}
 
 	return HealthcheckWebsiteResult{
-		IsUp: !body.IsDown,
+		Website: website,
+		IsUp:    !body.IsDown,
 	}
 }
