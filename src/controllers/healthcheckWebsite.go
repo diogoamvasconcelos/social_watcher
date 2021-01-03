@@ -40,8 +40,14 @@ func HealthcheckWebsite(website string) HealthcheckWebsiteResult {
 		log.Fatal(err)
 	}
 
+	isUp := !body.IsDown
+	// Allow `Unauthorized` exception
+	if !isUp && body.StatusCode == 401 && body.StatusText == "Unauthorized" {
+		isUp = true
+	}
+
 	return HealthcheckWebsiteResult{
 		Website: website,
-		IsUp:    !body.IsDown,
+		IsUp:    isUp,
 	}
 }
