@@ -10,8 +10,8 @@ resource "aws_lambda_function" "healthcheck_website" {
   handler          = "${local.healthcheck_website_lambda_name}"
   role             = "${aws_iam_role.lambda_default.arn}"
   runtime          = "go1.x"
-  memory_size      = "512"
-  timeout          = "10"
+  memory_size      = "128"
+  timeout          = "15"
   source_code_hash = "${filebase64sha256("${local.healthcheck_website_lambda_file}")}"
   description      = "Healthcheck Website Lambda"
   depends_on       = ["aws_cloudwatch_log_group.healthcheck_website"]

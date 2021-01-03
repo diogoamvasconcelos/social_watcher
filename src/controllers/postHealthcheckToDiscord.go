@@ -28,10 +28,10 @@ func PostHealthcheckToDiscord(healthcheck HealthcheckWebsiteResult) string {
 	var message string
 	if healthcheck.IsUp {
 
-		message += fmt.Sprintf(":green_heart: %s is UP again :green_heart:", healthcheck.Website)
+		message += fmt.Sprintf(":green_heart: <%s> is UP again :green_heart:", healthcheck.Website)
 	} else {
 
-		message += fmt.Sprintf(":rotating_light::fire: %s is DOWN :fire::rotating_light:", healthcheck.Website)
+		message += fmt.Sprintf(":rotating_light::fire: <%s> is DOWN @here :fire::rotating_light:", healthcheck.Website)
 	}
 
 	for _, channel := range healthcheckConfig.Channels {

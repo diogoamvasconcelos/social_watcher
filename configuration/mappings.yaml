@@ -1,7 +1,7 @@
 keywords:
   - value: "pureref"
     channels:
-      - 794147209976741918 # Diogo->bot-test
+      - 794147209976741918 # Diogo#bot-test
 healthcheck:
   channels:
-    - 794147209976741918 # Diogo->bot-test
+    - 794950541805355054 # Pureref#feed
