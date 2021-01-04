@@ -35,7 +35,7 @@ func GetMainItem(key MainItemKey) (MainItem, error) {
 		log.Fatal("Failed to unmarshall dbitem: ", err)
 	}
 
-	item, err := fromDynamoDBMainItemToMainItem(dbitem)
+	item, err := FromDynamoDBMainItemToMainItem(dbitem)
 	if err != nil {
 		log.Fatal("Failed to convert dbitem to MainItem: ", err)
 	}
@@ -43,7 +43,7 @@ func GetMainItem(key MainItemKey) (MainItem, error) {
 	return item, nil
 }
 
-func fromDynamoDBMainItemToMainItem(dbitem DynamoDBMainItem) (MainItem, error) {
+func FromDynamoDBMainItemToMainItem(dbitem DynamoDBMainItem) (MainItem, error) {
 	updatedAt, err := lib.FromISO8061(dbitem.GSI1SK)
 	if err != nil {
 		return MainItem{}, err

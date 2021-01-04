@@ -54,8 +54,6 @@ func handleRequest(ctx context.Context, event eventData) (string, error) {
 			UpdatedAt: lib.MinutesAgo(0),
 			Data:      resultStringified,
 		})
-
-		controllers.PostHealthcheckToDiscord(healthcheckResult)
 	} else {
 		log.Printf("No need to update healthcheck for website: %s -> still:%v", event.Website, healthcheckResult.IsUp)
 	}

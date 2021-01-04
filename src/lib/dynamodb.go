@@ -3,9 +3,11 @@
 package lib
 
 import (
+	"encoding/json"
 	"log"
 	"strings"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -68,4 +70,22 @@ func DynamoDBGetItem(dynamodbsvc *dynamodb.DynamoDB, tableName string, key inter
 
 	result, err := dynamodbsvc.GetItem(&input)
 	return result.Item, nil
+}
+
+// UnmarshalStreamImage converts events.DynamoDBAttributeValue to struct
+// from: https://stackoverflow.com/questions/49129534/unmarshal-mapstringdynamodbattributevalue-into-a-struct
+func UnmarshalStreamImage(attribute map[string]events.DynamoDBAttributeValue, out interface{}) error {
+	dbAttrMap := make(map[string]*dynamodb.AttributeValue)
+	for k, v := range attribute {
+		var dbAttr dynamodb.AttributeValue
+		bytes, marshalErr := v.MarshalJSON()
+		if marshalErr != nil {
+			return marshalErr
+		}
+
+		json.Unmarshal(bytes, &dbAttr)
+		dbAttrMap[k] = &dbAttr
+	}
+
+	return dynamodbattribute.UnmarshalMap(dbAttrMap, out)
 }

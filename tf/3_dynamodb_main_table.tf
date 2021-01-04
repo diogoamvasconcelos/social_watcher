@@ -1,8 +1,10 @@
 resource "aws_dynamodb_table" "main_table" {
-  name         = "main_table"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "PK"
-  range_key    = "SK"
+  name             = "main_table"
+  billing_mode     = "PAY_PER_REQUEST"
+  stream_enabled   = true
+  stream_view_type = "NEW_IMAGE"
+  hash_key         = "PK"
+  range_key        = "SK"
 
   attribute {
     name = "PK"

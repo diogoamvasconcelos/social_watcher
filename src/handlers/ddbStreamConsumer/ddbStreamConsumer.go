@@ -2,14 +2,11 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"strconv"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/diogoamvasconcelos/social_watcher/src/controllers"
 	"github.com/diogoamvasconcelos/social_watcher/src/lib"
 )
@@ -24,7 +21,7 @@ func handleRequest(ctx context.Context, event events.DynamoDBEvent) (string, err
 		}
 
 		var dynamoDbItem controllers.DynamoDBItem
-		err := UnmarshalStreamImage(record.Change.NewImage, &dynamoDbItem)
+		err := lib.UnmarshalStreamImage(record.Change.NewImage, &dynamoDbItem)
 		if err != nil {
 			log.Fatalf("Failed to unmarshal Record, %v", err)
 		}
@@ -44,26 +41,8 @@ func handleRequest(ctx context.Context, event events.DynamoDBEvent) (string, err
 }
 
 func main() {
-	log.SetPrefix("DDbStreeamConsumer: ")
+	log.SetPrefix("DdbStreamConsumer: ")
 	lambda.Start(handleRequest)
-}
-
-// UnmarshalStreamImage converts events.DynamoDBAttributeValue to struct
-// from: https://stackoverflow.com/questions/49129534/unmarshal-mapstringdynamodbattributevalue-into-a-struct
-func UnmarshalStreamImage(attribute map[string]events.DynamoDBAttributeValue, out interface{}) error {
-	dbAttrMap := make(map[string]*dynamodb.AttributeValue)
-	for k, v := range attribute {
-		var dbAttr dynamodb.AttributeValue
-		bytes, marshalErr := v.MarshalJSON()
-		if marshalErr != nil {
-			return marshalErr
-		}
-
-		json.Unmarshal(bytes, &dbAttr)
-		dbAttrMap[k] = &dbAttr
-	}
-
-	return dynamodbattribute.UnmarshalMap(dbAttrMap, out)
 }
 
 func fromDynamoDBItemToStoredItem(item controllers.DynamoDBItem) (controllers.StoredItem, error) {

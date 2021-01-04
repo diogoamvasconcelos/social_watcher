@@ -13,7 +13,7 @@ resource "aws_lambda_function" "ddb_stream_consumer" {
   memory_size      = "128"
   timeout          = "30"
   source_code_hash = "${filebase64sha256("${local.ddb_stream_consumer_lambda_file}")}"
-  description      = "WDynamoDB Stream Consumer"
+  description      = "  DynamoDB Stream Consumer"
   depends_on       = ["aws_cloudwatch_log_group.ddb_stream_consumer"]
 }
 
@@ -22,7 +22,7 @@ resource "aws_cloudwatch_log_group" "ddb_stream_consumer" {
   retention_in_days = 30
 }
 
-resource "aws_lambda_event_source_mapping" "ddb_stream_lambda_mapping" {
+resource "aws_lambda_event_source_mapping" "ddb_stream_consumer_lambda_mapping" {
   event_source_arn                   = aws_dynamodb_table.stored_items.stream_arn
   function_name                      = aws_lambda_function.ddb_stream_consumer.arn
   starting_position                  = "LATEST"
