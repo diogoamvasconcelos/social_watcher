@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/diogoamvasconcelos/social_watcher/src/lib"
 	"gopkg.in/yaml.v2"
 )
@@ -56,13 +57,28 @@ func PostToDiscord(item StoredItem) string {
 		return "ERROR"
 	}
 
-	var message string
-	message += fmt.Sprintf("> New `%s` Twitter message (lang=%s)", keyword, item.Data.Lang)
-	message += "\n"
-	message += item.Link
+	var messageData discordgo.MessageSend
+	messageData.Content += fmt.Sprintf("> New `%s` Twitter message", keyword)
+	messageData.Content += "\n"
+	messageData.Content += item.Link
+
+	if item.Data.Lang != "en" {
+		/*
+			messageData.Embed = &discordgo.MessageEmbed{
+				Color:       1146986, // DARK_AQUA
+				Title:       fmt.Sprintf("Translated message (lang: %s)", item.Data.Lang),
+				Description: item.Data.TranslatedText,
+			}
+		*/
+		messageData.Content += "\n"
+		messageData.Content += fmt.Sprintf("Translated message (lang: %s)", item.Data.Lang)
+		messageData.Content += "```"
+		messageData.Content += item.Data.TranslatedText
+		messageData.Content += "```"
+	}
 
 	for _, channel := range keywordConfig.Channels {
-		messageResult, err := discordClient.ChannelMessageSend(channel, message)
+		messageResult, err := discordClient.ChannelMessageSendComplex(channel, &messageData)
 		if err != nil {
 			log.Println("Discord: Failed to send message to Channel,", err)
 			return "ERROR"

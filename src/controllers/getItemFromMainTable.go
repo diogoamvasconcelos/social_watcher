@@ -9,7 +9,7 @@ import (
 )
 
 type MainItemKey struct {
-	// How to do Pick<MainItem, "PK | SK"> ??
+	// HOW-TO do Pick<MainItem, "PK | SK"> ??
 	PK string
 	SK string
 }

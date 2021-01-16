@@ -10,16 +10,21 @@ import (
 	"github.com/diogoamvasconcelos/social_watcher/src/lib"
 )
 
+type TwitterData struct {
+	TwitterSearchResultTweet        // important: don't use a comma here
+	TranslatedText           string `json:"translated_text"`
+}
+
 type StoredItem struct {
 	ID         string // Source|Hash
 	ItemIndex  int    // 0 = initial, >0 = aggregate
 	HappenedAt time.Time
 	SourceType string // twitter
 	Link       string
-	Data       TwitterSearchResultTweet
+	Data       TwitterData
 }
 
-type DynamoDBItem struct {
+type DynamoDBStoredItem struct {
 	PK     string // ID
 	SK     string // ItemIndex
 	GSI1PK string // "ALL"
@@ -27,7 +32,7 @@ type DynamoDBItem struct {
 	GSI2PK string // SourceType
 	GSI2SK string // HappenedAt
 	Link   string
-	Data   TwitterSearchResultTweet
+	Data   TwitterData
 }
 
 func StoreItems(items TwitterSearchResult) string {
@@ -38,12 +43,22 @@ func StoreItems(items TwitterSearchResult) string {
 		storedItem := fromTwitterSearchItemToStoredItem(item)
 		log.Printf("Item to store: %#v", storedItem)
 
-		dynamodbItem := fromStoredItemToDynamoDBItem(storedItem)
+		prevStoredItem, err := GetStoredItem(StoredItemKey{PK: storedItem.ID, SK: strconv.Itoa(storedItem.ItemIndex)})
+		if err != nil {
+			log.Fatal(nil)
+		}
 
-		result := lib.DynamoDBPutItem(dynamodbClient, storedItemsTableName, dynamodbItem, "attribute_not_exists(PK)")
-		log.Printf("Put DynamoDB item result: %v", result)
-		if result == "ERROR" {
-			log.Fatal("Failed to store item in:", storedItemsTableName)
+		if (prevStoredItem != StoredItem{}) {
+			// check if already exists
+			log.Printf("Skipping as item is already stored")
+		} else {
+			dynamodbItem := fromStoredItemToDynamoDBItem(storedItem)
+
+			result := lib.DynamoDBPutItem(dynamodbClient, storedItemsTableName, dynamodbItem, "attribute_not_exists(PK)")
+			log.Printf("Put DynamoDB item result: %v", result)
+			if result == "ERROR" {
+				log.Fatal("Failed to store item in:", storedItemsTableName)
+			}
 		}
 	}
 
@@ -53,20 +68,45 @@ func StoreItems(items TwitterSearchResult) string {
 func fromTwitterSearchItemToStoredItem(item TwitterSearchResultTweet) StoredItem {
 	sourceType := "twitter"
 
+	/*
+			// HOW-TO: spread `data` like this
+			twitterData := TwitterData{
+				...item,
+				TranslatedText: TranslateToEnglish(item.Text, item.Lang),
+			}
+
+		or even this
+		twitterData := TwitterData{
+			ID:             item.ID,
+			Text:           item.Text,
+			CreatedAt:      item.CreatedAt,
+			ConversationID: item.ConversationID,
+			Lang:           item.Lang,
+			TranslatedText: TranslateToEnglish(item.Text, item.Lang),
+		}
+	*/
+
+	twitterData := TwitterData{TranslatedText: TranslateToEnglish(item.Text, item.Lang)}
+	twitterData.ID = item.ID
+	twitterData.Text = item.Text
+	twitterData.CreatedAt = item.CreatedAt
+	twitterData.ConversationID = item.ConversationID
+	twitterData.Lang = item.Lang
+
 	return StoredItem{
-		ID:         fmt.Sprintf("%s|%s", sourceType, item.ID),
+		ID:         toStoredItemID(item.ID, sourceType),
 		ItemIndex:  0,
 		HappenedAt: item.CreatedAt,
 		SourceType: sourceType,
 		Link:       fmt.Sprintf("https://twitter.com/x/status/%s", item.ID),
-		Data:       item,
+		Data:       twitterData,
 	}
 }
 
-func fromStoredItemToDynamoDBItem(item StoredItem) DynamoDBItem {
+func fromStoredItemToDynamoDBItem(item StoredItem) DynamoDBStoredItem {
 	happenedAtString := lib.ToISO8061(item.HappenedAt)
 
-	return DynamoDBItem{
+	return DynamoDBStoredItem{
 		PK:     item.ID,
 		SK:     strconv.Itoa(item.ItemIndex),
 		GSI1PK: "All",
@@ -76,4 +116,8 @@ func fromStoredItemToDynamoDBItem(item StoredItem) DynamoDBItem {
 		Link:   item.Link,
 		Data:   item.Data,
 	}
+}
+
+func toStoredItemID(uniqueID string, sourceType string) string {
+	return fmt.Sprintf("%s|%s", sourceType, uniqueID)
 }

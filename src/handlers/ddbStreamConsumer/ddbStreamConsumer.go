@@ -20,7 +20,7 @@ func handleRequest(ctx context.Context, event events.DynamoDBEvent) (string, err
 			continue
 		}
 
-		var dynamoDbItem controllers.DynamoDBItem
+		var dynamoDbItem controllers.DynamoDBStoredItem
 		err := lib.UnmarshalStreamImage(record.Change.NewImage, &dynamoDbItem)
 		if err != nil {
 			log.Fatalf("Failed to unmarshal Record, %v", err)
@@ -45,7 +45,7 @@ func main() {
 	lambda.Start(handleRequest)
 }
 
-func fromDynamoDBItemToStoredItem(item controllers.DynamoDBItem) (controllers.StoredItem, error) {
+func fromDynamoDBItemToStoredItem(item controllers.DynamoDBStoredItem) (controllers.StoredItem, error) {
 	itemIndex, err := strconv.Atoi(item.SK)
 	if err != nil {
 		return controllers.StoredItem{}, err

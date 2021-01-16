@@ -53,6 +53,13 @@ resource "aws_iam_policy" "lambda_default" {
       ],
       "Resource": "arn:aws:dynamodb:*:*",
       "Effect": "Allow"
+    },
+    {
+      "Action": [
+        "translate:TranslateText"
+      ],
+      "Resource": "*",
+      "Effect": "Allow"
     }
   ]
 }

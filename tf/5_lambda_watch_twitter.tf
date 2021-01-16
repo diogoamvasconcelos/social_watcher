@@ -10,7 +10,7 @@ resource "aws_lambda_function" "watch_twitter" {
   handler          = "${local.watch_twitter_lambda_name}"
   role             = "${aws_iam_role.lambda_default.arn}"
   runtime          = "go1.x"
-  memory_size      = "128"
+  memory_size      = "160"
   timeout          = "3"
   source_code_hash = "${filebase64sha256("${local.watch_twitter_lambda_file}")}"
   description      = "Watch Twitter Lambda"

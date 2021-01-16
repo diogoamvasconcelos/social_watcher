@@ -7,6 +7,7 @@
 - ddbstream consumer lambda -> consumes and posts discord
 
   - v3: translates if not english?
+    - https://docs.aws.amazon.com/translate/latest/dg/API_TranslateText.html
 
 - Go improvements:
 

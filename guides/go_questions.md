@@ -1,3 +1,4 @@
+- search for `HOW-TO` in codebase
 - how to pretty-print struct/Object/JSON?
   - https://golangbyexample.com/print-struct-variables-golang/
     - `fmt.Printf("%#v", emp)`
@@ -13,3 +14,4 @@
   - { data: isDefault ? default(data) : other(data)}
 - how to compose types from other types?
   - e.g: `Pick<MainItem, "PK | SK">`
+  - use embedded structs to expand types: https://golang.org/ref/spec#Struct_types
