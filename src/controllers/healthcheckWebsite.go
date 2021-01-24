@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/diogoamvasconcelos/social_watcher/src/lib"
 )
@@ -24,7 +25,11 @@ type DownforHttpCheckResponse struct {
 func HealthcheckWebsite(website string) HealthcheckWebsiteResult {
 	log.Printf("Healthcheck website: %v", website)
 
-	resp, err := http.Get(fmt.Sprintf("https://api-prod.downfor.cloud/httpcheck/%s", website))
+	client := http.Client{
+		Timeout: 15 * time.Second,
+	}
+
+	resp, err := client.Get(fmt.Sprintf("https://api-prod.downfor.cloud/httpcheck/%s", website))
 	if err != nil {
 		log.Fatal("Failed to check 'downfor': ", err)
 	}
@@ -40,10 +45,26 @@ func HealthcheckWebsite(website string) HealthcheckWebsiteResult {
 		log.Fatal(err)
 	}
 
-	isUp := !body.IsDown
 	// Allow `Unauthorized` exception
-	if !isUp && body.StatusCode == 401 && body.StatusText == "Unauthorized" {
-		isUp = true
+	isUp := !body.IsDown || body.StatusCode == 401
+
+	if !isUp {
+		// Maybe should just use this instead: https://github.com/hashicorp/go-retryablehttp
+		currentTry := 0
+		for currentTry < 5 {
+			log.Printf("downfor says it's down, going to try directly to check the website. Try number:%d", currentTry)
+			resp, err := client.Get(website)
+			if err != nil {
+				log.Printf("Failed to check '%s': %v", website, err)
+			} else {
+				isUp = resp.StatusCode == 200 || resp.StatusCode == 401
+				if isUp {
+					break
+				}
+			}
+
+			currentTry++
+		}
 	}
 
 	return HealthcheckWebsiteResult{

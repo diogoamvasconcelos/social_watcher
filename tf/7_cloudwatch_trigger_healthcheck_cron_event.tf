@@ -5,7 +5,7 @@ resource "aws_cloudwatch_event_rule" "trigger_healthcheck" {
 resource "aws_cloudwatch_event_target" "trigger_pureref_healthcheck" {
   rule  = aws_cloudwatch_event_rule.trigger_healthcheck.name
   arn   = aws_lambda_function.healthcheck_website.arn
-  input = "{\"Website\": \"http://pureref.com\"}"
+  input = "{\"Website\": \"https://pureref.com\"}"
 }
 
 resource "aws_cloudwatch_event_target" "trigger_paypalapi_healthcheck" {

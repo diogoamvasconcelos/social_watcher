@@ -41,4 +41,24 @@ if err := file.Chmod(0664); err != nil {
   - deferred functions are executed in LIFO order (stack)
   - arguments to the functio called in `defer` are evaluated when read, so you can exploit []()
 
-- TODO: continue from [data](https://golang.org/doc/effective_go.html#data)
+- use [slices](https://golang.org/doc/effective_go.html#slices) and take advantage of the range operators (e.g: buf[1:])
+
+- use the second `comma ok` from a map get values to check if map constains:
+
+  ```
+  _, present := timeZone[tz]
+  ```
+
+- use append almost like the js spread
+
+  - https://golang.org/doc/effective_go.html#append
+
+- Use `const` to create enumlike data
+
+  - https://golang.org/doc/effective_go.html#constants
+
+- use the `init()` function of a package, as it can be quite convient (it runs after all package initialization)
+
+  - https://golang.org/doc/effective_go.html#init
+
+- TODO: continue from https://golang.org/doc/effective_go.html#maps
