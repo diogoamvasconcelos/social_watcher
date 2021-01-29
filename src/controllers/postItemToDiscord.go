@@ -44,6 +44,13 @@ func PostToDiscord(item StoredItem) string {
 		}
 	}
 
+	// Get author data
+	twitterUserDetails, err := GetTwitterUserDetails(item.Data.AuthorId)
+	if err != nil {
+		fmt.Println("GetTwitterUserDetails Error: ", err)
+		twitterUserDetails = TwitterUserDetails{ID: item.Data.AuthorId, Followers: -1}
+	}
+
 	// Discord Client
 	credentials := GetDiscordCredentials()
 	discordClient, err := lib.NewDiscordClient(credentials.Token)
@@ -58,7 +65,7 @@ func PostToDiscord(item StoredItem) string {
 	}
 
 	var messageData discordgo.MessageSend
-	messageData.Content += fmt.Sprintf("> New `%s` Twitter message", keyword)
+	messageData.Content += fmt.Sprintf("> New `%s` Twitter message (author followers: %d)", keyword, twitterUserDetails.Followers)
 	messageData.Content += "\n"
 	messageData.Content += item.Link
 

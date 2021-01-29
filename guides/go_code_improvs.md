@@ -61,4 +61,5 @@ if err := file.Chmod(0664); err != nil {
 
   - https://golang.org/doc/effective_go.html#init
 
+- user nested structs: https://medium.com/@xcoulon/nested-structs-in-golang-2c750403a007
 - TODO: continue from https://golang.org/doc/effective_go.html#maps

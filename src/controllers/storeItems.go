@@ -91,6 +91,7 @@ func fromTwitterSearchItemToStoredItem(item TwitterSearchResultTweet) StoredItem
 	twitterData.Text = item.Text
 	twitterData.CreatedAt = item.CreatedAt
 	twitterData.ConversationID = item.ConversationID
+	twitterData.AuthorId = item.AuthorId
 	twitterData.Lang = item.Lang
 
 	return StoredItem{
