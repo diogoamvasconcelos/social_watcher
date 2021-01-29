@@ -69,7 +69,7 @@ func PostToDiscord(item StoredItem) string {
 	messageData.Content += "\n"
 	messageData.Content += item.Link
 
-	if item.Data.Lang != "en" {
+	if item.Data.Text != item.Data.TranslatedText {
 		/*
 			messageData.Embed = &discordgo.MessageEmbed{
 				Color:       1146986, // DARK_AQUA

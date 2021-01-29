@@ -7,7 +7,7 @@ import (
 )
 
 func TranslateToEnglish(originalText string, languageCode string) string {
-	if languageCode == "en" {
+	if languageCode == "en" || languageCode == "und" {
 		return originalText
 	}
 
