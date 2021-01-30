@@ -2,6 +2,9 @@ keywords:
   - value: "pureref"
     channels:
       - 794147209976741918 # Diogo#bot-test
+  - value: "vizref"
+    channels:
+      - 805202695639400499 # Diogo#competion-watch
 healthcheck:
   channels:
     - 794950541805355054 # Pureref#feed

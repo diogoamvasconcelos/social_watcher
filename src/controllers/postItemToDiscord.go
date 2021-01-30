@@ -35,10 +35,9 @@ func PostToDiscord(item StoredItem) string {
 	// Get keywordConfig
 	mappingsConfig := GetMappingsConfig()
 
-	keyword := "pureref"
 	keywordConfig := KeywordConfig{}
 	for _, mapping := range mappingsConfig.Keyword {
-		if mapping.Value == keyword {
+		if mapping.Value == item.Keyword {
 			keywordConfig = mapping
 			break
 		}
@@ -65,7 +64,7 @@ func PostToDiscord(item StoredItem) string {
 	}
 
 	var messageData discordgo.MessageSend
-	messageData.Content += fmt.Sprintf("> New `%s` Twitter message (author followers: %d)", keyword, twitterUserDetails.Followers)
+	messageData.Content += fmt.Sprintf("> New `%s` Twitter message (author followers: %d)", item.Keyword, twitterUserDetails.Followers)
 	messageData.Content += "\n"
 	messageData.Content += item.Link
 

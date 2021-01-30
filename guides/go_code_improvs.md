@@ -27,9 +27,12 @@ if err := file.Chmod(0664); err != nil {
 
   - Less need to use `break` because of the no-fall through. Also, `break` and `continue` can take an extra "label" for nested for/switch cases, e.g: `break Loop`
 
-- Dynamic type (i.e: `interface {}`) run-time type check
+- Dynamic type (i.e: `interface {}`) run-time type [check this](https://golang.org/doc/effective_go.html#interface_conversions)
 
   - Use a [type switch](https://golang.org/doc/effective_go.html#type_switch)
+
+  - Cast using the `type assertion`
+    - e.g: `str, ok := value.(string)`
 
 - Use [named return paramters](https://golang.org/doc/effective_go.html#named-results) more often (can make code more readable)
 
@@ -62,4 +65,9 @@ if err := file.Chmod(0664); err != nil {
   - https://golang.org/doc/effective_go.html#init
 
 - user nested structs: https://medium.com/@xcoulon/nested-structs-in-golang-2c750403a007
-- TODO: continue from https://golang.org/doc/effective_go.html#maps
+
+- write functions on named-types (https://golang.org/doc/effective_go.html#pointers_vs_values)
+
+  - ex. myType.ToString()
+
+- TODO: continue from https://golang.org/doc/effective_go.html#concurrency

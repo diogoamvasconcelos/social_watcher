@@ -2,9 +2,7 @@
 
   - searches last hour
     - writes to ddb (batches in parallel?)
-    - make `keyword` part of the stored item data (and queriable, and post it on slack)
   - also searches for replies on main entries that are active (having a reply in the last x days)
-  - posts author follower count
 
 - Go improvements:
 
@@ -25,10 +23,6 @@
   - run once a day (very few posts)
   - or native https://www.reddit.com/dev/api/#GET_search (not sure if searhes for comments)
   - use https://redditsearch.io/ (not sure if legal)
-
-- compitcao search
-
-  - o outro programa pro ipad
 
 - Website Healthcheck
   - if has to retry for a few times the last X minuts, send warning to channel (without @here)

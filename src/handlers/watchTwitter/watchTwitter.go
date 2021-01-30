@@ -16,7 +16,7 @@ func handleRequest(ctx context.Context, event eventData) (string, error) {
 	log.Printf("Event data: %v", event)
 	items := controllers.SearchTwitter(event.Keyword)
 
-	result := controllers.StoreItems(items)
+	result := controllers.StoreItems(items, event.Keyword)
 	return result, nil
 }
 

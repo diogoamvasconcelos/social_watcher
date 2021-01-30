@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -56,11 +58,17 @@ func fromDynamoDBItemToStoredItem(item controllers.DynamoDBStoredItem) (controll
 		return controllers.StoredItem{}, err
 	}
 
+	gsi2pkUnpacked := strings.Split(item.GSI2PK, "|")
+	if len(gsi2pkUnpacked) != 2 {
+		return controllers.StoredItem{}, errors.New("Failed to unpack GSI2PK")
+	}
+
 	return controllers.StoredItem{
 		ID:         item.PK,
 		ItemIndex:  itemIndex,
 		HappenedAt: happenedAt,
-		SourceType: item.GSI2PK,
+		SourceType: gsi2pkUnpacked[0],
+		Keyword:    gsi2pkUnpacked[1],
 		Link:       item.Link,
 		Data:       item.Data,
 	}, nil

@@ -20,6 +20,7 @@ type StoredItem struct {
 	ItemIndex  int    // 0 = initial, >0 = aggregate
 	HappenedAt time.Time
 	SourceType string // twitter
+	Keyword    string
 	Link       string
 	Data       TwitterData
 }
@@ -29,18 +30,18 @@ type DynamoDBStoredItem struct {
 	SK     string // ItemIndex
 	GSI1PK string // "ALL"
 	GSI1SK string // HappenedAt
-	GSI2PK string // SourceType
+	GSI2PK string // SourceType|Keyword
 	GSI2SK string // HappenedAt
 	Link   string
 	Data   TwitterData
 }
 
-func StoreItems(items TwitterSearchResult) string {
+func StoreItems(items TwitterSearchResult, keyword string) string {
 	dynamodbClient := lib.NewDynamoClient()
 	storedItemsTableName := os.Getenv("STORED_ITEMS_TABLE_NAME")
 
 	for _, item := range items.Data {
-		storedItem := fromTwitterSearchItemToStoredItem(item)
+		storedItem := fromTwitterSearchItemToStoredItem(item, keyword)
 		log.Printf("Item to store: %#v", storedItem)
 
 		prevStoredItem, err := GetStoredItem(StoredItemKey{PK: storedItem.ID, SK: strconv.Itoa(storedItem.ItemIndex)})
@@ -65,7 +66,7 @@ func StoreItems(items TwitterSearchResult) string {
 	return "OK"
 }
 
-func fromTwitterSearchItemToStoredItem(item TwitterSearchResultTweet) StoredItem {
+func fromTwitterSearchItemToStoredItem(item TwitterSearchResultTweet, keyword string) StoredItem {
 	sourceType := "twitter"
 
 	/*
@@ -99,6 +100,7 @@ func fromTwitterSearchItemToStoredItem(item TwitterSearchResultTweet) StoredItem
 		ItemIndex:  0,
 		HappenedAt: item.CreatedAt,
 		SourceType: sourceType,
+		Keyword:    keyword,
 		Link:       fmt.Sprintf("https://twitter.com/x/status/%s", item.ID),
 		Data:       twitterData,
 	}
@@ -112,7 +114,7 @@ func fromStoredItemToDynamoDBItem(item StoredItem) DynamoDBStoredItem {
 		SK:     strconv.Itoa(item.ItemIndex),
 		GSI1PK: "All",
 		GSI1SK: happenedAtString,
-		GSI2PK: item.SourceType,
+		GSI2PK: fmt.Sprintf("%s|%s", item.SourceType, item.Keyword),
 		GSI2SK: happenedAtString,
 		Link:   item.Link,
 		Data:   item.Data,
