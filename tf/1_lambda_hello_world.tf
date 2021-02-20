@@ -6,19 +6,19 @@ locals {
 }
 
 resource "aws_lambda_function" "hello_world_lambda" {
-  filename         = "${local.hello_world_lambda_file}"
-  function_name    = "${local.hello_world_lambda_name}"
-  handler          = "${local.hello_world_lambda_handler}"
-  role             = "${aws_iam_role.hello_world_lambda.arn}"
+  filename         = local.hello_world_lambda_file
+  function_name    = local.hello_world_lambda_name
+  handler          = local.hello_world_lambda_handler
+  role             = aws_iam_role.hello_world_lambda.arn
   runtime          = "go1.x"
   memory_size      = "512"
   timeout          = "3"
-  source_code_hash = "${filebase64sha256("${local.hello_world_lambda_file}")}"
+  source_code_hash = filebase64sha256(local.hello_world_lambda_file)
   description      = "Hello World Lambda"
   depends_on = [
-    "aws_cloudwatch_log_group.hello_world_lambda",
-    "aws_iam_role.hello_world_lambda",
-    "aws_iam_role_policy_attachment.hello_world_lambda"
+    aws_cloudwatch_log_group.hello_world_lambda,
+    aws_iam_role.hello_world_lambda,
+    aws_iam_role_policy_attachment.hello_world_lambda
   ]
 }
 
@@ -28,7 +28,7 @@ resource "aws_cloudwatch_log_group" "hello_world_lambda" {
 }
 
 resource "aws_iam_role" "hello_world_lambda" {
-  name = "${local.hello_world_lambda_role}"
+  name = local.hello_world_lambda_role
 
   assume_role_policy = <<EOF
 {
@@ -48,7 +48,7 @@ EOF
 }
 
 resource "aws_iam_policy" "hello_world_lambda" {
-  name        = "${local.hello_world_lambda_name}"
+  name        = local.hello_world_lambda_name
   path        = "/"
   description = "IAM policy for Hello World lambda - Logging"
 
@@ -70,6 +70,6 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "hello_world_lambda" {
-  role       = "${aws_iam_role.hello_world_lambda.name}"
-  policy_arn = "${aws_iam_policy.hello_world_lambda.arn}"
+  role       = aws_iam_role.hello_world_lambda.name
+  policy_arn = aws_iam_policy.hello_world_lambda.arn
 }

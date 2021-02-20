@@ -5,20 +5,20 @@ locals {
 }
 
 resource "aws_lambda_function" "watch_twitter" {
-  filename         = "${local.watch_twitter_lambda_file}"
-  function_name    = "${local.watch_twitter_lambda_name}"
-  handler          = "${local.watch_twitter_lambda_name}"
-  role             = "${aws_iam_role.lambda_default.arn}"
+  filename         = local.watch_twitter_lambda_file
+  function_name    = local.watch_twitter_lambda_name
+  handler          = local.watch_twitter_lambda_name
+  role             = aws_iam_role.lambda_default.arn
   runtime          = "go1.x"
   memory_size      = "160"
   timeout          = "3"
-  source_code_hash = "${filebase64sha256("${local.watch_twitter_lambda_file}")}"
+  source_code_hash = filebase64sha256(local.watch_twitter_lambda_file)
   description      = "Watch Twitter Lambda"
-  depends_on       = ["aws_cloudwatch_log_group.watch_twitter"]
+  depends_on       = [aws_cloudwatch_log_group.watch_twitter]
 
   environment {
     variables = {
-      "STORED_ITEMS_TABLE_NAME" = "${aws_dynamodb_table.stored_items.name}"
+      "STORED_ITEMS_TABLE_NAME" = aws_dynamodb_table.stored_items.name
     }
   }
 }

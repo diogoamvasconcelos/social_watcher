@@ -3,7 +3,7 @@ locals {
 }
 
 resource "aws_iam_role" "lambda_default" {
-  name = "${local.default_lambda_role_name}"
+  name = local.default_lambda_role_name
 
   assume_role_policy = <<EOF
 {
@@ -23,7 +23,7 @@ EOF
 }
 
 resource "aws_iam_policy" "lambda_default" {
-  name        = "${local.default_lambda_role_name}"
+  name        = local.default_lambda_role_name
   path        = "/"
   description = "IAM policy for the lambdas"
 
@@ -67,6 +67,6 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_default" {
-  role       = "${aws_iam_role.lambda_default.name}"
-  policy_arn = "${aws_iam_policy.lambda_default.arn}"
+  role       = aws_iam_role.lambda_default.name
+  policy_arn = aws_iam_policy.lambda_default.arn
 }

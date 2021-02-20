@@ -5,16 +5,16 @@ locals {
 }
 
 resource "aws_lambda_function" "ddb_stream_consumer" {
-  filename         = "${local.ddb_stream_consumer_lambda_file}"
-  function_name    = "${local.ddb_stream_consumer_lambda_name}"
-  handler          = "${local.ddb_stream_consumer_lambda_name}"
-  role             = "${aws_iam_role.lambda_default.arn}"
+  filename         = local.ddb_stream_consumer_lambda_file
+  function_name    = local.ddb_stream_consumer_lambda_name
+  handler          = local.ddb_stream_consumer_lambda_name
+  role             = aws_iam_role.lambda_default.arn
   runtime          = "go1.x"
   memory_size      = "128"
   timeout          = "30"
-  source_code_hash = "${filebase64sha256("${local.ddb_stream_consumer_lambda_file}")}"
-  description      = "  DynamoDB Stream Consumer"
-  depends_on       = ["aws_cloudwatch_log_group.ddb_stream_consumer"]
+  source_code_hash = filebase64sha256(local.ddb_stream_consumer_lambda_file)
+  description      = "DynamoDB Stream Consumer"
+  depends_on       = [aws_cloudwatch_log_group.ddb_stream_consumer]
 }
 
 resource "aws_cloudwatch_log_group" "ddb_stream_consumer" {

@@ -5,20 +5,20 @@ locals {
 }
 
 resource "aws_lambda_function" "healthcheck_website" {
-  filename         = "${local.healthcheck_website_lambda_file}"
-  function_name    = "${local.healthcheck_website_lambda_name}"
-  handler          = "${local.healthcheck_website_lambda_name}"
-  role             = "${aws_iam_role.lambda_default.arn}"
+  filename         = local.healthcheck_website_lambda_file
+  function_name    = local.healthcheck_website_lambda_name
+  handler          = local.healthcheck_website_lambda_name
+  role             = aws_iam_role.lambda_default.arn
   runtime          = "go1.x"
   memory_size      = "128"
   timeout          = "120"
-  source_code_hash = "${filebase64sha256("${local.healthcheck_website_lambda_file}")}"
+  source_code_hash = filebase64sha256(local.healthcheck_website_lambda_file)
   description      = "Healthcheck Website Lambda"
-  depends_on       = ["aws_cloudwatch_log_group.healthcheck_website"]
+  depends_on       = [aws_cloudwatch_log_group.healthcheck_website]
 
   environment {
     variables = {
-      "MAIN_TABLE_NAME" = "${aws_dynamodb_table.main_table.name}"
+      "MAIN_TABLE_NAME" = aws_dynamodb_table.main_table.name
     }
   }
 }
