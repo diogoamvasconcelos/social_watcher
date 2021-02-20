@@ -44,10 +44,10 @@ func PostToDiscord(item StoredItem) string {
 	}
 
 	// Get author data
-	twitterUserDetails, err := GetTwitterUserDetails(item.Data.AuthorId)
+	twitterUserDetails, err := GetTwitterUserDetails(item.Data.AuthorID)
 	if err != nil {
 		fmt.Println("GetTwitterUserDetails Error: ", err)
-		twitterUserDetails = TwitterUserDetails{ID: item.Data.AuthorId, Followers: -1}
+		twitterUserDetails = TwitterUserDetails{ID: item.Data.AuthorID, Followers: -1}
 	}
 
 	// Discord Client

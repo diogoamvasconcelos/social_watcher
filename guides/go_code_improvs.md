@@ -70,4 +70,29 @@ if err := file.Chmod(0664); err != nil {
 
   - ex. myType.ToString()
 
-- TODO: continue from https://golang.org/doc/effective_go.html#concurrency
+- panic/recover pattern (throw/catch kind of)
+
+  - only works for goroutines
+
+  ```
+    func server(workChan <-chan *Work) {
+        for work := range workChan {
+            go safelyDo(work)
+        }
+    }
+
+    func safelyDo(work *Work) {
+        defer func() {
+            if err := recover(); err != nil {
+                log.Println("work failed:", err)
+            }
+        }()
+        do(work)
+  }
+  ```
+
+- user `defer` (so powerful!!)
+
+  - deferred functions can modify named return values (crazy!!)
+
+- the [flag pckage](https://golang.org/pkg/flag/) is very nice to do CLIs :)

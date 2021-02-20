@@ -92,7 +92,7 @@ func fromTwitterSearchItemToStoredItem(item TwitterSearchResultTweet, keyword st
 	twitterData.Text = item.Text
 	twitterData.CreatedAt = item.CreatedAt
 	twitterData.ConversationID = item.ConversationID
-	twitterData.AuthorId = item.AuthorId
+	twitterData.AuthorID = item.AuthorID
 	twitterData.Lang = item.Lang
 
 	return StoredItem{
