@@ -17,6 +17,8 @@
   - use embedded structs to expand types: https://golang.org/ref/spec#Struct_types
 - How to do enums?
   - maybe: https://golang.org/doc/effective_go.html#constants
+- inline ternary ( `var e = a ? b : c`)
+  - https://golang.org/doc/faq#Does_Go_have_a_ternary_form
 - WHY GO SUCKS
   - https://golang.org/doc/effective_go.html#append
     - `You can't actually write a function in Go where the type T is determined by the caller. That's why append is built in: it needs support from the compiler.`

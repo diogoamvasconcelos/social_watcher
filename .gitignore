@@ -16,4 +16,5 @@
 
 .build
 .tmp
+.DS_store
 **/.terraform
