@@ -15,7 +15,7 @@ createLambdaArtifact() {
   LAMBDA_FN_SRC_PATH=$2
   
   rm -f $TMP_DIR/$LAMBDA_ARTIFACT
-  GOOS=linux go build -o $TMP_DIR/$LAMBDA_ARTIFACT $THIS_PATH/../src/$LAMBDA_FN_SRC_PATH
+  GOOS=linux GOARCH=amd64 go build -o $TMP_DIR/$LAMBDA_ARTIFACT $THIS_PATH/../src/$LAMBDA_FN_SRC_PATH
   zip -qjr $OUT_DIR/$LAMBDA_ARTIFACT.zip $TMP_DIR/$LAMBDA_ARTIFACT
   # Add config folder
   zip -gr $OUT_DIR/$LAMBDA_ARTIFACT.zip $CONFIG_REL_DIR

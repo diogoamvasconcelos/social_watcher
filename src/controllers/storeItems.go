@@ -15,6 +15,8 @@ type TwitterData struct {
 	TranslatedText           string `json:"translated_text"`
 }
 
+// TODO: Create a common base struct for StoredItem and NewKeywordItem
+
 type StoredItem struct {
 	ID         string // Source|Hash
 	ItemIndex  int    // 0 = initial, >0 = aggregate
@@ -36,6 +38,24 @@ type DynamoDBStoredItem struct {
 	Data   TwitterData
 }
 
+type NewKeywordItem struct {
+	ID         string // Source|Hash
+	ItemIndex  int    // 0 = initial, >0 = aggregate
+	HappenedAt time.Time
+	SourceType string // twitter
+	Keyword    string
+	Type       string // NewKeyword
+}
+
+type DynamoDBNewKeywordItem struct {
+	PK     string // ID
+	SK     string // ItemIndex
+	GSI1PK string // "ALL"
+	GSI1SK string // HappenedAt
+	GSI2PK string // SourceType|Keyword
+	GSI2SK string // HappenedAt
+}
+
 func StoreItems(items TwitterSearchResult, keyword string) string {
 	dynamodbClient := lib.NewDynamoClient()
 	storedItemsTableName := os.Getenv("STORED_ITEMS_TABLE_NAME")
@@ -50,8 +70,22 @@ func StoreItems(items TwitterSearchResult, keyword string) string {
 		}
 
 		if (prevStoredItem != StoredItem{}) {
-			// check if already exists
 			log.Printf("Skipping as item is already stored")
+			/*
+				// check if new keyword or should skip
+				if prevStoredItem.Keyword == keyword {
+					log.Printf("Skipping as item is already stored")
+				} else {
+					dynamodbNewKeywordItem := toDynamoDBNewKeywordItem(fromStoredItemToNewKeywordItem(storedItem))
+
+					// TODO: Deduplicate this
+					result := lib.DynamoDBPutItem(dynamodbClient, storedItemsTableName, dynamodbNewKeywordItem, "attribute_not_exists(PK)")
+					log.Printf("Put DynamoDB item result: %v", result)
+					if result == "ERROR" {
+						log.Fatal("Failed to store item in:", storedItemsTableName)
+					}
+				}
+			*/
 		} else {
 			dynamodbItem := fromStoredItemToDynamoDBItem(storedItem)
 
@@ -87,13 +121,8 @@ func fromTwitterSearchItemToStoredItem(item TwitterSearchResultTweet, keyword st
 		}
 	*/
 
-	twitterData := TwitterData{TranslatedText: TranslateToEnglish(item.Text, item.Lang)}
-	twitterData.ID = item.ID
-	twitterData.Text = item.Text
-	twitterData.CreatedAt = item.CreatedAt
-	twitterData.ConversationID = item.ConversationID
-	twitterData.AuthorID = item.AuthorID
-	twitterData.Lang = item.Lang
+	// NICE!!
+	twitterData := TwitterData{TwitterSearchResultTweet: item, TranslatedText: TranslateToEnglish(item.Text, item.Lang)}
 
 	return StoredItem{
 		ID:         toStoredItemID(item.ID, sourceType),
@@ -123,4 +152,30 @@ func fromStoredItemToDynamoDBItem(item StoredItem) DynamoDBStoredItem {
 
 func toStoredItemID(uniqueID string, sourceType string) string {
 	return fmt.Sprintf("%s|%s", sourceType, uniqueID)
+}
+
+func toDynamoDBNewKeywordItem(item NewKeywordItem) DynamoDBNewKeywordItem {
+	happenedAtString := lib.ToISO8061(item.HappenedAt)
+
+	return DynamoDBNewKeywordItem{
+		PK:     item.ID,
+		SK:     strconv.Itoa(item.ItemIndex),
+		GSI1PK: "All",
+		GSI1SK: happenedAtString,
+		GSI2PK: fmt.Sprintf("%s|%s", item.SourceType, item.Keyword),
+		GSI2SK: happenedAtString,
+	}
+}
+
+func fromStoredItemToNewKeywordItem(item StoredItem) NewKeywordItem {
+	// HOW-TO: omit just some fields (Link, Data)
+	// Maybe use the struct coverter, like for `json/xml`
+	return NewKeywordItem{
+		ID:         item.ID,
+		ItemIndex:  1,
+		HappenedAt: time.Now(),
+		SourceType: item.SourceType,
+		Keyword:    item.Keyword,
+		Type:       "NewKeyword",
+	}
 }
