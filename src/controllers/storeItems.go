@@ -60,40 +60,57 @@ func StoreItems(items TwitterSearchResult, keyword string) string {
 	dynamodbClient := lib.NewDynamoClient()
 	storedItemsTableName := os.Getenv("STORED_ITEMS_TABLE_NAME")
 
+	nofItems := len(items.Data)
+	errors := make(chan error, nofItems)
+
 	for _, item := range items.Data {
-		storedItem := fromTwitterSearchItemToStoredItem(item, keyword)
-		log.Printf("Item to store: %#v", storedItem)
+		go func(item TwitterSearchResultTweet) {
+			storedItem := fromTwitterSearchItemToStoredItem(item, keyword)
+			log.Printf("Item to store: %#v", storedItem)
 
-		prevStoredItem, err := GetStoredItem(StoredItemKey{PK: storedItem.ID, SK: strconv.Itoa(storedItem.ItemIndex)})
-		if err != nil {
-			log.Fatal(nil)
-		}
+			prevStoredItem, err := GetStoredItem(StoredItemKey{PK: storedItem.ID, SK: strconv.Itoa(storedItem.ItemIndex)})
+			if err != nil {
+				errors <- err
+				return
+			}
 
-		if (prevStoredItem != StoredItem{}) {
-			log.Printf("Skipping as item is already stored")
-			/*
-				// check if new keyword or should skip
-				if prevStoredItem.Keyword == keyword {
-					log.Printf("Skipping as item is already stored")
-				} else {
-					dynamodbNewKeywordItem := toDynamoDBNewKeywordItem(fromStoredItemToNewKeywordItem(storedItem))
+			if (prevStoredItem != StoredItem{}) {
+				log.Printf("Skipping as item is already stored")
+				errors <- nil
+				return
+				/*
+					// check if new keyword or should skip
+					if prevStoredItem.Keyword == keyword {
+						log.Printf("Skipping as item is already stored")
+					} else {
+						dynamodbNewKeywordItem := toDynamoDBNewKeywordItem(fromStoredItemToNewKeywordItem(storedItem))
 
-					// TODO: Deduplicate this
-					result := lib.DynamoDBPutItem(dynamodbClient, storedItemsTableName, dynamodbNewKeywordItem, "attribute_not_exists(PK)")
-					log.Printf("Put DynamoDB item result: %v", result)
-					if result == "ERROR" {
-						log.Fatal("Failed to store item in:", storedItemsTableName)
+						// TODO: Deduplicate this
+						result := lib.DynamoDBPutItem(dynamodbClient, storedItemsTableName, dynamodbNewKeywordItem, "attribute_not_exists(PK)")
+						log.Printf("Put DynamoDB item result: %v", result)
+						if result == "ERROR" {
+							log.Fatal("Failed to store item in:", storedItemsTableName)
+						}
 					}
-				}
-			*/
-		} else {
+				*/
+			}
+
 			dynamodbItem := fromStoredItemToDynamoDBItem(storedItem)
 
 			result := lib.DynamoDBPutItem(dynamodbClient, storedItemsTableName, dynamodbItem, "attribute_not_exists(PK)")
 			log.Printf("Put DynamoDB item result: %v", result)
 			if result == "ERROR" {
-				log.Fatal("Failed to store item in:", storedItemsTableName)
+				errors <- fmt.Errorf("Failed to store item in: %v", storedItemsTableName)
+			} else {
+				errors <- nil
 			}
+
+		}(item)
+	}
+
+	for i := 0; i < nofItems; i++ {
+		if err := <-errors; err != nil {
+			log.Fatal(err)
 		}
 	}
 

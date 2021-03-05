@@ -1,8 +1,3 @@
-- twitterLambda(keyword) -> searches twitter (last hour/day) and adds to ddb
-
-  - searches last hour
-    - writes to ddb (batches in parallel?)
-
 - Go improvements:
 
   - Use the AWS SDK v2: https://aws.github.io/aws-sdk-go-v2/docs/
