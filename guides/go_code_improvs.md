@@ -26,6 +26,7 @@ if err := file.Chmod(0664); err != nil {
     ```
 
   - Less need to use `break` because of the no-fall through. Also, `break` and `continue` can take an extra "label" for nested for/switch cases, e.g: `break Loop`
+    xx
 
 - Dynamic type (i.e: `interface {}`) run-time type [check this](https://golang.org/doc/effective_go.html#interface_conversions)
 
@@ -96,3 +97,5 @@ if err := file.Chmod(0664); err != nil {
   - deferred functions can modify named return values (crazy!!)
 
 - the [flag pckage](https://golang.org/pkg/flag/) is very nice to do CLIs :)
+
+- use [interfaces](https://gobyexample.com/interfaces) for ports/adapters

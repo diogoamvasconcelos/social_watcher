@@ -46,7 +46,7 @@ func HealthcheckWebsite(website string) HealthcheckWebsiteResult {
 	}
 
 	// Allow `Unauthorized` exception
-	isUp := !body.IsDown || body.StatusCode == 401
+	isUp := !body.IsDown || body.StatusCode == http.StatusUnauthorized
 
 	if !isUp {
 		// Maybe should just use this instead: https://github.com/hashicorp/go-retryablehttp
@@ -57,7 +57,7 @@ func HealthcheckWebsite(website string) HealthcheckWebsiteResult {
 			if err != nil {
 				log.Printf("Failed to check '%s': %v", website, err)
 			} else {
-				isUp = resp.StatusCode == 200 || resp.StatusCode == 401
+				isUp = resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusUnauthorized
 				if isUp {
 					break
 				}

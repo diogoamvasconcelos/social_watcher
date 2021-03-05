@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/diogoamvasconcelos/social_watcher/src/lib"
 )
@@ -41,7 +42,7 @@ func GetTwitterUserDetails(userId string) (TwitterUserDetails, error) {
 		log.Fatal(err)
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		log.Printf("GetUserDetails failed: %v", string(bodyBinary))
 		return TwitterUserDetails{}, errors.New(("Failed to GetUserDetails"))
 	}
