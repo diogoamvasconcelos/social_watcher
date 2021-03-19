@@ -8,7 +8,7 @@ resource "aws_lambda_function" "ddb_stream_consumer" {
   filename         = local.ddb_stream_consumer_lambda_file
   function_name    = local.ddb_stream_consumer_lambda_name
   handler          = local.ddb_stream_consumer_lambda_name
-  role             = aws_iam_role.lambda_default.arn
+  role             = aws_iam_role.lambda_default_old.arn
   runtime          = "go1.x"
   memory_size      = "128"
   timeout          = "30"

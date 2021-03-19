@@ -8,7 +8,7 @@ resource "aws_lambda_function" "healthcheck_website" {
   filename         = local.healthcheck_website_lambda_file
   function_name    = local.healthcheck_website_lambda_name
   handler          = local.healthcheck_website_lambda_name
-  role             = aws_iam_role.lambda_default.arn
+  role             = aws_iam_role.lambda_default_old.arn
   runtime          = "go1.x"
   memory_size      = "128"
   timeout          = "120"

@@ -8,7 +8,7 @@ resource "aws_lambda_function" "watch_twitter" {
   filename         = local.watch_twitter_lambda_file
   function_name    = local.watch_twitter_lambda_name
   handler          = local.watch_twitter_lambda_name
-  role             = aws_iam_role.lambda_default.arn
+  role             = aws_iam_role.lambda_default_old.arn
   runtime          = "go1.x"
   memory_size      = "160"
   timeout          = "3"
