@@ -138,6 +138,8 @@
       }
 
       c := Circle{Point{0,0}, 1}
+      // or
+      c := Circle{Point: Point{X:0, Y:0}, Radius: 1}
       ```
 
       > Note, the anonymous field can be a pointer `&Point` for example
